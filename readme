@@ -1,0 +1,7 @@
+Career Recommender is basically an application that is built to predict the career of students who take up the career recommendation QUIZ.
+The Quiz collects student data such as their group in 12th grade,their interrest,the percentile they secured in 12th grade ,
+their strengths and their weaknesses.
+Using these data we try to give the student an aggregate score.Every score range is intrinsically linked to a career category.
+Hence, By assessing that we predict the Career for our candidates.
+The scoring is based off data produced by studies that correlate the afore mentioned quiz questions to various jobs on the market.
+
