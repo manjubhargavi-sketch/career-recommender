@@ -1,23 +1,16 @@
 import React,{useState} from 'react';
 
 import './test.css';
-import Predict from './predict';
-// import {ReactDOM,Router} from 'react-dom/client';
-
-import {Routes,Route,Link} from 'react-router-dom';
-
-// import axios from 'axios';
-
-
 
 var result='';
 
 function Test(){
-
+  const [error, setError] = useState(null);
+   const [prediction, setPrediction] = useState(null);
    const [selectedOptions, setSelectedOptions] = useState({
    hobby: '',
    group: '',
-   percentile: '',
+   percentage: '',
    subject: '',
    strength: '',
    weakness: '',});
@@ -30,46 +23,35 @@ function Test(){
       }));
     };
     
-    function prediction(){
- 
+   
+    const handleFormSubmit = async (event) => {
+         event.preventDefault();
+    try {
+      const response = await fetch('http://127.0.0.1:5000/predict', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(selectedOptions),
+      });
+      if (!response.ok) {
+        throw new Error('Failed to fetch predictions');
+      }
+       const data = await response.json();
+       if (data.predictions && data.predictions.length > 0) {
+        setPrediction(data.predictions);
+    } else {
+        setError('No predictions found');
+    }
+      } catch (error) {
+        console.error('Error:', error);
+        alert(error);
+        setError('Failed to fetch predictions');
+      }
 
       
-        if(selectedOptions.hobby==='Programming' || selectedOptions.hobby==='Puzzles & games'){
-           
-            result="Programmer";
-        }
+   };
 
-        var outputelement=document.getElementById("output");
-        outputelement.innerHTML=result;
-       }
-    
-    
-   function handleSubmit(event){
-     
-      event.preventDefault();
-      const {hobby,group,percentile,subject,strength,weakness}=selectedOptions;
-      
-      var result=prediction();
-      
-      
-      fetch('http://localhost:8000/quiz/submit',{
-         method:'POST',
-         headers:{
-            'Content-Type':'application/json',
-         },
-         body:JSON.stringify({hobby,group,percentile,subject,strength,weakness}),})
-         
-         .then(response=>response.json())
-      .then(selectedOptions=>{
-         console.log('Entry created:',selectedOptions);
-          })
-       .catch(error=>{
-         console.error('Error creating entry:',error);
-        })
-        
-      
-   }
-    
 
     return(
 
@@ -77,7 +59,7 @@ function Test(){
     <div id="Test">
   <h1 color="white">Are you ready to take the test</h1>
   <div id="test">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleFormSubmit} method='POST'>
        <label id="q1">Question 1:
        <p>Which among the following is you favourite hobby or close to your favourite hobby</p>
        <select 
@@ -89,10 +71,10 @@ function Test(){
             <option value="music">music</option>
             <option value="Programming">Programming</option>
             <option value="reading">Reading</option>
-            <option value="Art">Art</option>
-            <option value="Gardening">Gardening</option>
-            <option value="Socializing">Socializing</option>
-            <option value="Puzzles & games">Puzzles & games</option>
+            <option value="art">Art</option>
+            <option value="gardening">Gardening</option>
+            <option value="socializing">Socializing</option>
+            <option value="puzzles and games">Puzzles & games</option>
             
         </select>
         </label>
@@ -104,9 +86,9 @@ function Test(){
          value={selectedOptions.group}
          onChange={handleOptionChange}>
             
-            <option value="bio">Biology</option>
-            <option value="comp">Computer Science</option>
-            <option value="com">Commerce</option>
+            <option value="Biology">Biology</option>
+            <option value="Computer Science">Computer Science</option>
+            <option value="Commerce">Commerce</option>
          </select>
         </label>
 
@@ -115,11 +97,11 @@ function Test(){
         <label id="q3"> Question3:
         <p>Select the range of your 12th board percentile</p>
          <select name="percentile"
-         value={selectedOptions.percentile}
+         value={selectedOptions.percentage}
          onChange={handleOptionChange}>
             <option value="90-100">90-100</option>
             <option value="80-90">80-90</option>
-            <option value="70=80">80-90</option>
+            <option value="70-80">70-80</option>
             <option value="60-70">60-70</option>
             <option value="below 60">below 60</option>
          </select>
@@ -131,13 +113,13 @@ function Test(){
          <select name="subject"
          value={selectedOptions.subject}
          onChange={handleOptionChange}>
-            <option value="math">Mathematics</option>
-            <option value="bio">Biology</option>
-            <option value="chem"> Chemistry</option>
-            <option value="phy">Physics</option>
-            <option value="com">Commerce</option>
-            <option value="eco">Economics</option>
-            <option value="psy">Psychology</option>
+            <option value="Mathematics">Mathematics</option>
+            <option value="Biology">Biology</option>
+            <option value="Chemistry">Chemistry</option>
+            <option value="Physics">Physics</option>
+            <option value="Commerce">Commerce</option>
+            <option value="Economics">Economics</option>
+            <option value="Psychology">Psychology</option>
          </select>
         </label>
         <label id="q5">Question 5:
@@ -158,10 +140,10 @@ function Test(){
         <select name="weakness"
         value={selectedOptions.weakness}
         onChange={handleOptionChange}>
-            <option value="lazy">Laziness</option>
-            <option value="procrastination">Procrastination</option>
-            <option value="deadlines">deadlines</option>
-            <option value="panic">Panic in high Pressure</option>
+            <option value="Laziness">Laziness</option>
+            <option value="Procrastination">Procrastination</option>
+            <option value="Deadlines">deadlines</option>
+            <option value="Panic stricken">Panic in high Pressure</option>
         </select>
         </label>
      
@@ -172,9 +154,8 @@ function Test(){
         <p> Your suggested career is </p>
         <label id="output"></label>
         </div>
-
-       
-
+        {prediction !== null && <p>Prediction: {prediction}</p>}
+        
 
 
 

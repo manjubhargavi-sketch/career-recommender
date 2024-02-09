@@ -20,19 +20,19 @@ async function retrieveData() {
       console.error('Error retrieving data:', error);
     }
   }
-  app.post("/quiz/submit",async(req,res)=>{
+  // app.post("/quiz/submit",async(req,res)=>{
     
-    const{hobby,group,percentile,subject,strength,weakness}=req.body
-    try{
-        const entry=new Quizdata({hobby,group,percentile,subject,strength,weakness})
-        await entry.save();
-        res.send("Form submitted successfully");
-    }
-    catch(error){
-        console.error(error);
-        res.status(500).send('An error occured');
-    }
-  })
+  //   const{hobby,group,percentile,subject,strength,weakness}=req.body
+  //   try{
+  //       const entry=new Quizdata({hobby,group,percentile,subject,strength,weakness})
+  //       await entry.save();
+  //       res.send("Form submitted successfully");
+  //   }
+  //   catch(error){
+  //       console.error(error);
+  //       res.status(500).send('An error occured');
+  //   }
+  // })
 
 
 
